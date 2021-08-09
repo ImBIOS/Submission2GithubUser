@@ -14,10 +14,33 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:id="@+id/tv_object_received"
+        android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_photo"
+        android:layout_marginTop="36dp"
+        android:text="@string/object_received"
+        android:textAlignment="center"
+        android:textSize="12pt"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_tagline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginTop="4dp"
+        android:text="@string/object_received"
+        android:textAlignment="center"
+        android:textSize="8pt" />
+
+    <TextView
+        android:id="@+id/tv_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_tagline"
         android:layout_marginTop="48dp"
-        android:text="@string/object_received" />
+        android:text="@string/object_received"
+        android:textAlignment="textStart"
+        android:textSize="7pt" />
 </RelativeLayout>

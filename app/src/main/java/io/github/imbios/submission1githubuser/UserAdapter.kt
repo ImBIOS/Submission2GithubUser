@@ -36,7 +36,7 @@ class UserAdapter internal constructor(private val context: Context) : BaseAdapt
 
         internal fun bind(user: User) {
             txtName.text = user.name
-            txtDescription.text = user.location
+            txtDescription.text = "@${user.username}"
             imgPhoto.setImageResource(user.avatar)
         }
     }

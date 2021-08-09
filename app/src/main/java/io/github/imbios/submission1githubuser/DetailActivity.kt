@@ -17,12 +17,16 @@ class DetailActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Detail User"
 
-        val tvObject: TextView = findViewById(R.id.tv_object_received)
+        val tvName: TextView = findViewById(R.id.tv_name)
+        val tvTagline: TextView = findViewById(R.id.tv_tagline)
+        val tvData: TextView = findViewById(R.id.tv_data)
         val imgPhoto: ImageView = findViewById(R.id.img_photo)
 
         val user = intent.getParcelableExtra<User>(EXTRA_USER) as User
-        val text = "Name : ${user.name.toString()},\nCompany : ${user.company},\nUsername : ${user.username},\nLocation : ${user.location}"
-        tvObject.text = text
+        tvName.text = user.name
+        tvTagline.text = "@${user.username} | ${user.company}"
+        tvData.text = "Location: ${user.location}\nRepository: ${user.repository}\n" +
+                "Followers: ${user.followers}\nFollowing: ${user.following}"
         imgPhoto.setImageResource(user.avatar)
     }
 }

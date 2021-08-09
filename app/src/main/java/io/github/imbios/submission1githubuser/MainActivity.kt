@@ -16,13 +16,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: UserAdapter
     private lateinit var dataName: Array<String>
-    private lateinit var dataDescription: Array<String>
+    private lateinit var dataLocation: Array<String>
     private lateinit var dataPhoto: TypedArray
     private lateinit var dataUsername: Array<String>
-    private lateinit var dataRepository: TypedArray
+    private lateinit var dataRepository: Array<String>
     private lateinit var dataCompany: Array<String>
-    private lateinit var dataFollowers: TypedArray
-    private lateinit var dataFollowing: TypedArray
+    private lateinit var dataFollowers: Array<String>
+    private lateinit var dataFollowing: Array<String>
     private var users = arrayListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +58,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun prepare() {
         dataName = resources.getStringArray(R.array.name)
-        dataDescription = resources.getStringArray(R.array.location)
+        dataLocation = resources.getStringArray(R.array.location)
         dataPhoto = resources.obtainTypedArray(R.array.avatar)
         dataUsername = resources.getStringArray(R.array.username)
-        dataRepository = resources.obtainTypedArray(R.array.repository)
+        dataRepository = resources.getStringArray(R.array.repository)
         dataCompany = resources.getStringArray(R.array.company)
-        dataFollowers = resources.obtainTypedArray(R.array.followers)
-        dataFollowing = resources.obtainTypedArray(R.array.following)
+        dataFollowers = resources.getStringArray(R.array.followers)
+        dataFollowing = resources.getStringArray(R.array.following)
     }
 
     private fun addItem() {
@@ -72,12 +72,12 @@ class MainActivity : AppCompatActivity() {
             val user = User(
                 dataPhoto.getResourceId(position, -1),
                 dataName[position],
-                dataDescription[position],
+                dataLocation[position],
                 dataUsername[position],
-                dataRepository.getResourceId(position, -1),
+                dataRepository[position],
                 dataCompany[position],
-                dataFollowers.getResourceId(position, -1),
-                dataFollowing.getResourceId(position, -1),
+                dataFollowers[position],
+                dataFollowing[position],
             )
             users.add(user)
         }
