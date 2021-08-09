@@ -7,25 +7,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import io.github.imbios.submission1githubuser.R
 
-class HeroAdapter internal constructor(private val context: Context) : BaseAdapter() {
-    internal var heroes = arrayListOf<Hero>()
+class UserAdapter internal constructor(private val context: Context) : BaseAdapter() {
+    internal var users = arrayListOf<User>()
 
-    override fun getCount(): Int = heroes.size
+    override fun getCount(): Int = users.size
 
-    override fun getItem(i: Int): Any = heroes[i]
+    override fun getItem(i: Int): Any = users[i]
 
     override fun getItemId(i: Int): Long = i.toLong()
 
     override fun getView(position: Int, view: View?, viewGroup: ViewGroup): View {
         var itemView = view
         if (itemView == null) {
-            itemView = LayoutInflater.from(context).inflate(R.layout.item_hero, viewGroup, false)
+            itemView = LayoutInflater.from(context).inflate(R.layout.item_user, viewGroup, false)
         }
 
         val viewHolder = ViewHolder(itemView as View)
 
-        val hero = getItem(position) as Hero
-        viewHolder.bind(hero)
+        val user = getItem(position) as User
+        viewHolder.bind(user)
         return itemView
     }
 
@@ -34,10 +34,10 @@ class HeroAdapter internal constructor(private val context: Context) : BaseAdapt
         private val txtDescription: TextView = view.findViewById(R.id.txt_description)
         private val imgPhoto: ImageView = view.findViewById(R.id.img_photo)
 
-        internal fun bind(hero: Hero) {
-            txtName.text = hero.name
-            txtDescription.text = hero.description
-            imgPhoto.setImageResource(hero.photo)
+        internal fun bind(user: User) {
+            txtName.text = user.name
+            txtDescription.text = user.location
+            imgPhoto.setImageResource(user.avatar)
         }
     }
 }
