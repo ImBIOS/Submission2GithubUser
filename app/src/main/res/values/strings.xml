@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">Submission1GithubUser</string>
-    <string name="name_users">Github User</string>
+    <string name="users_name">Github User</string>
     <string name="lorem">lorem ipsum dolor sit amet</string>
     <string name="object_received">Object Diterima</string>
+    <string name="detail_user">Detail User</string>
+    <string name="github_user">Github User\'s</string>
+
+    <string name="list">List</string>
+    <string name="grid">Grid</string>
+    <string name="with_cardview">with CardView</string>
+    <string name="favorite">Favorite</string>
+    <string name="share">Share</string>
 
     <string-array name="username">
         <item>JakeWharton</item>

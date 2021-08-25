@@ -29,12 +29,12 @@ class UserAdapter internal constructor(private val context: Context) : BaseAdapt
         return itemView
     }
 
-    private inner class ViewHolder internal constructor(view: View) {
+    private inner class ViewHolder(view: View) {
         private val txtName: TextView = view.findViewById(R.id.txt_name)
         private val txtDescription: TextView = view.findViewById(R.id.txt_description)
         private val imgPhoto: ImageView = view.findViewById(R.id.img_photo)
 
-        internal fun bind(user: User) {
+        fun bind(user: User) {
             txtName.text = user.name
             txtDescription.text = "@${user.username}"
             imgPhoto.setImageResource(user.avatar)

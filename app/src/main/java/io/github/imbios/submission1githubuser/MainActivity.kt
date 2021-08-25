@@ -1,86 +1,133 @@
 package io.github.imbios.submission1githubuser
 
 import User
-import UserAdapter
 import android.content.Intent
-import android.content.res.TypedArray
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.Button
-import android.widget.ListView
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import io.github.imbios.submission1githubuser.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var adapter: UserAdapter
-    private lateinit var dataName: Array<String>
-    private lateinit var dataLocation: Array<String>
-    private lateinit var dataPhoto: TypedArray
-    private lateinit var dataUsername: Array<String>
-    private lateinit var dataRepository: Array<String>
-    private lateinit var dataCompany: Array<String>
-    private lateinit var dataFollowers: Array<String>
-    private lateinit var dataFollowing: Array<String>
-    private var users = arrayListOf<User>()
+    private lateinit var binding: ActivityMainBinding
+    private val users = ArrayList<User>()
+    private var mode: Int = 0
+
+    companion object {
+        private const val STATE_TITLE = "state_string"
+        private const val STATE_LIST = "state_list"
+        private const val STATE_MODE = "state_mode"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        supportActionBar?.title = "Github User's"
+        binding.rvUsers.setHasFixedSize(true)
 
-        val listView: ListView = findViewById(R.id.lv_list)
-        adapter = UserAdapter(this)
-        listView.adapter = adapter
+        if (savedInstanceState == null) {
+            users.addAll(getListUsers())
+            showRecyclerList()
+            mode = R.id.action_list
+        } else {
+            title = savedInstanceState.getString(STATE_TITLE).toString()
+            val stateList = savedInstanceState.getParcelableArrayList<User>(STATE_LIST)
+            val stateMode = savedInstanceState.getInt(STATE_MODE)
+            if (stateList != null) {
+                users.addAll(stateList)
+            }
+            setMode(stateMode)
+        }
 
-        prepare()
-        addItem()
+        users.addAll(getListUsers())
+        showRecyclerList()
+        supportActionBar?.title = getString(R.string.github_user)
+    }
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            val user = User(
-                users[position].avatar,
-                users[position].name,
-                users[position].location,
-                users[position].username,
-                users[position].repository,
-                users[position].company,
-                users[position].followers,
-                users[position].following
-            )
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
-            val moveWithObjectIntent = Intent(this@MainActivity, DetailActivity::class.java)
-            moveWithObjectIntent.putExtra(DetailActivity.EXTRA_USER, user)
-            startActivity(moveWithObjectIntent)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        setMode(item.itemId)
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setMode(selectedMode: Int) {
+        when (selectedMode) {
+            R.id.action_list -> {
+                showRecyclerList()
+            }
+            R.id.action_grid -> {
+                showRecyclerGrid()
+            }
+            R.id.action_cardview -> {
+                showRecyclerCardView()
+            }
         }
     }
 
-    private fun prepare() {
-        dataName = resources.getStringArray(R.array.name)
-        dataLocation = resources.getStringArray(R.array.location)
-        dataPhoto = resources.obtainTypedArray(R.array.avatar)
-        dataUsername = resources.getStringArray(R.array.username)
-        dataRepository = resources.getStringArray(R.array.repository)
-        dataCompany = resources.getStringArray(R.array.company)
-        dataFollowers = resources.getStringArray(R.array.followers)
-        dataFollowing = resources.getStringArray(R.array.following)
-    }
-
-    private fun addItem() {
+    private fun getListUsers(): ArrayList<User> {
+        val dataName = resources.getStringArray(R.array.name)
+        val dataDescription = resources.getStringArray(R.array.location)
+        val dataPhoto = resources.obtainTypedArray(R.array.avatar)
+        val dataUsername = resources.getStringArray(R.array.username)
+        val dataRepository = resources.getStringArray(R.array.repository)
+        val dataCompany = resources.getStringArray(R.array.company)
+        val dataFollowers = resources.getStringArray(R.array.followers)
+        val dataFollowing = resources.getStringArray(R.array.following)
+        val listUser = ArrayList<User>()
         for (position in dataName.indices) {
             val user = User(
                 dataPhoto.getResourceId(position, -1),
                 dataName[position],
-                dataLocation[position],
+                dataDescription[position],
                 dataUsername[position],
                 dataRepository[position],
                 dataCompany[position],
                 dataFollowers[position],
                 dataFollowing[position],
             )
-            users.add(user)
+            listUser.add(user)
         }
-        adapter.users = users
+        return listUser
+    }
+
+    private fun showRecyclerList() {
+        binding.rvUsers.layoutManager = LinearLayoutManager(this)
+        val listUserAdapter = ListUserAdapter(users)
+        binding.rvUsers.adapter = listUserAdapter
+
+        listUserAdapter.setOnItemClickCallback(object : ListUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: User) {
+                showSelectedUser(data)
+            }
+        })
+    }
+
+    private fun showRecyclerGrid() {
+        binding.rvUsers.layoutManager = GridLayoutManager(this, 2)
+        val gridHeroAdapter = GridUserAdapter(users)
+        binding.rvUsers.adapter = gridHeroAdapter
+    }
+
+    private fun showRecyclerCardView() {
+        binding.rvUsers.layoutManager = LinearLayoutManager(this)
+        val cardViewUserAdapter = CardViewUserAdapter(users)
+        binding.rvUsers.adapter = cardViewUserAdapter
+    }
+
+    private fun showSelectedUser(user: User) {
+        Toast.makeText(this, "Kamu memilih ${user.name}", Toast.LENGTH_SHORT).show()
+
+        val moveWithObjectIntent = Intent(this@MainActivity, DetailActivity::class.java)
+        moveWithObjectIntent.putExtra(DetailActivity.EXTRA_USER, user)
+        startActivity(moveWithObjectIntent)
     }
 }
