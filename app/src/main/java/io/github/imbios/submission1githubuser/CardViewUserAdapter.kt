@@ -14,6 +14,11 @@ import io.github.imbios.submission1githubuser.databinding.ItemCardviewUserBindin
 class CardViewUserAdapter(private val listUser: ArrayList<User>) :
     RecyclerView.Adapter<CardViewUserAdapter.CardViewViewHolder>() {
 
+    private var onItemClickCallback: ListUserAdapter.OnItemClickCallback? = null
+    fun setOnItemClickCallback(onItemClickCallback: ListUserAdapter.OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -67,7 +72,13 @@ class CardViewUserAdapter(private val listUser: ArrayList<User>) :
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                itemView.setOnClickListener { onItemClickCallback?.onItemClicked(user) }
             }
         }
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: User)
     }
 }

@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.imbios.submission1githubuser.databinding.ActivityMainBinding
+import java.lang.String
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -113,14 +115,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRecyclerGrid() {
         binding.rvUsers.layoutManager = GridLayoutManager(this, 2)
-        val gridHeroAdapter = GridUserAdapter(users)
-        binding.rvUsers.adapter = gridHeroAdapter
+        val gridUserAdapter = GridUserAdapter(users)
+        binding.rvUsers.adapter = gridUserAdapter
+
+        gridUserAdapter.setOnItemClickCallback(object : ListUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: User) {
+                showSelectedUser(data)
+            }
+        })
     }
 
     private fun showRecyclerCardView() {
         binding.rvUsers.layoutManager = LinearLayoutManager(this)
         val cardViewUserAdapter = CardViewUserAdapter(users)
         binding.rvUsers.adapter = cardViewUserAdapter
+
+        cardViewUserAdapter.setOnItemClickCallback(object : ListUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: User) {
+                showSelectedUser(data)
+            }
+        })
     }
 
     private fun showSelectedUser(user: User) {

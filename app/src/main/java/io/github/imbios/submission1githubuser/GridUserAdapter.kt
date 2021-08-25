@@ -39,7 +39,13 @@ class GridUserAdapter(private val listUser: ArrayList<User>) :
                     .load(user.avatar)
                     .apply(RequestOptions().override(350, 550))
                     .into(imgItemPhoto)
+
+                itemView.setOnClickListener { onItemClickCallback?.onItemClicked(user) }
             }
         }
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: User)
     }
 }
