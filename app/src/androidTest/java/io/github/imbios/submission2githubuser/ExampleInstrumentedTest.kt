@@ -1,4 +1,4 @@
-package io.github.imbios.submission1githubuser
+package io.github.imbios.submission2githubuser
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

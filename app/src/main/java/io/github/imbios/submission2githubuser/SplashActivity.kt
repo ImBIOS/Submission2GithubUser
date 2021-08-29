@@ -1,9 +1,9 @@
-package io.github.imbios.submission1githubuser
+package io.github.imbios.submission2githubuser
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 
 
 class SplashActivity : AppCompatActivity() {
