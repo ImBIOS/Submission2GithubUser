@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.rodesta_dicodingsubmission2.FollowingAdapter
-import com.example.rodesta_dicodingsubmission2.followingFilterList
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -24,7 +23,7 @@ class FollowingFragment : Fragment() {
         const val EXTRA_DATA = "extra_data"
     }
 
-    private var listUser: ArrayList<UserData> = ArrayList()
+    private lateinit var viewModel: DetailViewModel
     private lateinit var adapter: FollowingAdapter
 
     private var _binding: FragmentFollowingBinding? = null
@@ -38,6 +37,7 @@ class FollowingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
         _binding = FragmentFollowingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -49,8 +49,8 @@ class FollowingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = FollowingAdapter(listUser)
-        listUser.clear()
+        adapter = FollowingAdapter(viewModel.listUser)
+        viewModel.listUser.clear()
         val dataUser = requireActivity().intent.getParcelableExtra<UserData>(EXTRA_DATA) as UserData
         getUserFollowing(dataUser.username.toString())
     }
@@ -59,6 +59,7 @@ class FollowingFragment : Fragment() {
         binding.progressBarFollowing.visibility = View.VISIBLE
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "ImBIOS/MyGithubUserApp")
+        client.addHeader("Authorization", "token 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")
 
         val url = "https://api.github.com/users/$id/following"
         client.get(url, object : AsyncHttpResponseHandler() {
@@ -107,6 +108,7 @@ class FollowingFragment : Fragment() {
         binding.progressBarFollowing.visibility = View.VISIBLE
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "ImBIOS/MyGithubUserApp")
+        client.addHeader("Authorization", "token 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")
 
         val url = "https://api.github.com/users/$id"
         client.get(url, object : AsyncHttpResponseHandler() {
@@ -128,7 +130,7 @@ class FollowingFragment : Fragment() {
                     val repository: String? = jsonObject.getString("public_repos")
                     val followers: String? = jsonObject.getString("followers")
                     val following: String? = jsonObject.getString("following")
-                    listUser.add(
+                    viewModel.listUser.add(
                         UserData(
                             username,
                             name,
@@ -170,7 +172,7 @@ class FollowingFragment : Fragment() {
     private fun showRecyclerList() {
         binding.recycleViewFollowing.layoutManager = LinearLayoutManager(activity)
         val listDataAdapter =
-            FollowingAdapter(followingFilterList)
+            FollowingAdapter(FollowingFilterList)
         binding.recycleViewFollowing.adapter = adapter
 
         listDataAdapter.setOnItemClickCallback(object :

@@ -17,4 +17,5 @@
     <string name="following">Following</string>
     <string name="avatar">Avatar</string>
     <string name="change_language_settings">Change Language Settings</string>
+    <string name="query_hint">Find Username</string>
 </resources>

@@ -1,5 +1,6 @@
 package io.github.imbios.submission2githubuser
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import io.github.imbios.submission2githubuser.databinding.ItemCardviewUserBinding
 
+lateinit var mcontext: Context
 
 class CardViewUserAdapter(private val listUserData: ArrayList<UserData>) :
     RecyclerView.Adapter<CardViewUserAdapter.CardViewViewHolder>() {

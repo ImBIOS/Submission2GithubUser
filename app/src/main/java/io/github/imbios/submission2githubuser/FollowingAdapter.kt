@@ -1,4 +1,4 @@
-package com.example.rodesta_dicodingsubmission2
+package io.github.imbios.submission2githubuser
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,16 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import de.hdodenhof.circleimageview.CircleImageView
-import io.github.imbios.submission2githubuser.R
-import io.github.imbios.submission2githubuser.UserData
-import mcontext
+import io.github.imbios.submission2githubuser.databinding.FragmentFollowingBinding
+import io.github.imbios.submission2githubuser.databinding.ItemCardviewUserBinding
 
-var followingFilterList = ArrayList<UserData>()
+var FollowingFilterList = ArrayList<UserData>()
 
 class FollowingAdapter(listUser: ArrayList<UserData>) :
     RecyclerView.Adapter<FollowingAdapter.ListViewHolder>() {
     init {
-        followingFilterList = listUser
+        FollowingFilterList = listUser
     }
 
     private var onItemClickCallback: OnItemClickCallback? = null
@@ -27,23 +26,20 @@ class FollowingAdapter(listUser: ArrayList<UserData>) :
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val view: View = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.item_cardview_user, viewGroup, false)
-        val sch = ListViewHolder(view)
-        mcontext = viewGroup.context
-        return sch
+        val binding = ItemCardviewUserBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        return ListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val data = followingFilterList[position]
+        val data = FollowingFilterList[position]
         Glide.with(holder.itemView.context)
             .load(data.avatar)
             .apply(RequestOptions().override(250, 250))
-            .into(holder.imgAvatar)
-        holder.txtUsername.text = data.username
-        holder.txtName.text = data.name
-        holder.txtCompany.text = data.company
-        holder.txtLocation.text = data.location
+            .into(holder.binding.imgItemPhoto)
+        holder.binding.txtUsername.text = data.username
+        holder.binding.txtName.text = data.name
+        holder.binding.txtCompany.text = data.company
+        holder.binding.txtLocation.text = data.location
         holder.itemView.setOnClickListener {
             //DO NOTHING
         }
@@ -53,14 +49,8 @@ class FollowingAdapter(listUser: ArrayList<UserData>) :
         fun onItemClicked(UserData: UserData)
     }
 
-    override fun getItemCount(): Int = followingFilterList.size
+    override fun getItemCount(): Int = FollowingFilterList.size
 
-    inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imgAvatar: CircleImageView = itemView.findViewById(R.id.img_item_photo)
-        var txtUsername: TextView = itemView.findViewById(R.id.img_item_photo)
-        var txtName: TextView = itemView.findViewById((R.id.detail_name))
-        var txtCompany: TextView = itemView.findViewById(R.id.detail_company)
-        var txtLocation: TextView = itemView.findViewById(R.id.detail_location)
-    }
+    inner class ListViewHolder(var binding: ItemCardviewUserBinding) : RecyclerView.ViewHolder(binding.root)
 
 }

@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.rodesta_dicodingsubmission2.FollowersAdapter
-import com.example.rodesta_dicodingsubmission2.followersFilterList
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -24,7 +23,7 @@ class FollowersFragment : Fragment() {
         const val EXTRA_DATA = "extra_data"
     }
 
-    private var listUser: ArrayList<UserData> = ArrayList()
+    private lateinit var viewModel: DetailViewModel
     private lateinit var adapter: FollowersAdapter
 
     private var _binding: FragmentFollowersBinding? = null
@@ -38,6 +37,7 @@ class FollowersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
         _binding = FragmentFollowersBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -49,8 +49,8 @@ class FollowersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = FollowersAdapter(listUser)
-        listUser.clear()
+        adapter = FollowersAdapter(viewModel.listUser)
+        viewModel.listUser.clear()
         val dataUser = requireActivity().intent.getParcelableExtra<UserData>(EXTRA_DATA) as UserData
         getUserFollowers(dataUser.username.toString())
     }
@@ -107,6 +107,7 @@ class FollowersFragment : Fragment() {
         binding.progressBarFollowers.visibility = View.VISIBLE
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "ImBIOS/MyGithubUserApp")
+        client.addHeader("Authorization", "token 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")
 
         val url = "https://api.github.com/users/$id"
         client.get(url, object : AsyncHttpResponseHandler() {
@@ -128,7 +129,7 @@ class FollowersFragment : Fragment() {
                     val repository: String? = jsonObject.getString("public_repos")
                     val followers: String? = jsonObject.getString("followers")
                     val following: String? = jsonObject.getString("following")
-                    listUser.add(
+                    viewModel.listUser.add(
                         UserData(
                             username,
                             name,
@@ -171,6 +172,7 @@ class FollowersFragment : Fragment() {
         binding.recycleViewFollowers.layoutManager = LinearLayoutManager(activity)
         val listDataAdapter =
             FollowersAdapter(followersFilterList)
+
         binding.recycleViewFollowers.adapter = adapter
 
         listDataAdapter.setOnItemClickCallback(object :

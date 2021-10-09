@@ -1,5 +1,6 @@
 package io.github.imbios.submission2githubuser
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -8,8 +9,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.loopj.android.http.AsyncHttpClient
@@ -22,8 +25,8 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private var users: ArrayList<UserData> = ArrayList()
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
@@ -33,8 +36,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.rvUsers.setHasFixedSize(true)
 
         showRecyclerCardView()
         supportActionBar?.title = getString(R.string.github_user)
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 if (query.isEmpty()) {
                     return true
                 } else {
-                    this@MainActivity.users.clear()
+                    viewModel.users.clear()
                     getUserSearch(query)
                 }
                 return true
@@ -79,8 +80,9 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "ImBIOS/MyGithubUserApp")
+        client.addHeader("Authorization", "token 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")
 
-        val url = "https://api.github.com/users"
+        val url = "https://api.github.com/search/users?q=ImBIOS"
         client.get(url, object : AsyncHttpResponseHandler() {
             override fun onSuccess(
                 statusCode: Int,
@@ -91,9 +93,10 @@ class MainActivity : AppCompatActivity() {
                 val result = String(responseBody)
                 Log.d(TAG, result)
                 try {
-                    val jsonArray = JSONArray(result)
-                    for (i in 0 until jsonArray.length()) {
-                        val jsonObject = jsonArray.getJSONObject(i)
+                    val jsonArray = JSONObject(result)
+                    val item = jsonArray.getJSONArray("items")
+                    for (i in 0 until item.length()) {
+                        val jsonObject = item.getJSONObject(i)
                         val username: String = jsonObject.getString("login")
                         getDetailActivity(username)
                     }
@@ -127,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "ImBIOS/MyGithubUserApp")
+        client.addHeader("Authorization", "token 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")
 
         val url = "https://api.github.com/search/users?q=$id"
         client.get(url, object : AsyncHttpResponseHandler() {
@@ -176,6 +180,7 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "ImBIOS/MyGithubUserApp")
+        client.addHeader("Authorization", "token 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")
 
         val url = "https://api.github.com/users/$id"
         client.get(url, object : AsyncHttpResponseHandler() {
@@ -197,7 +202,7 @@ class MainActivity : AppCompatActivity() {
                     val repository: String? = jsonObject.getString("public_repos")
                     val followers: String? = jsonObject.getString("followers")
                     val following: String? = jsonObject.getString("following")
-                    this@MainActivity.users.add(
+                    viewModel.users.add(
                         UserData(
                             username,
                             name,
@@ -249,7 +254,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRecyclerCardView() {
         binding.rvUsers.layoutManager = LinearLayoutManager(this)
-        val cardViewUserAdapter = CardViewUserAdapter(users)
+        val cardViewUserAdapter = CardViewUserAdapter(viewModel.users)
         binding.rvUsers.adapter = cardViewUserAdapter
 
         cardViewUserAdapter.setOnItemClickCallback(object :
